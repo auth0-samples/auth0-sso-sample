@@ -6,9 +6,9 @@ This is the example for the [SSO article](https://docs.auth0.com/sso/single-sign
 
 In this example, we have 3 applications:
 
-* App 1: app1.com (single page app)
-* App 2: app2.com (single page app)
-* App 3: app3.com (regular web app)
+* app1.com (single page app)
+* app2.com (single page app)
+* app3.com (regular web app)
 
 Each application has its own folder in this repository with its own instructions on how to run it. 
 
@@ -34,4 +34,8 @@ For that, open `/etc/hosts` and edits as follows:
 127.0.0.1 app3.com
 ````
 
-Once that's done, just run all 3 applications (See specific instructions on each README) and go to `app1.com:3000` to start using the applications :).
+Once that's done, just run all 3 applications (See specific instructions on each README) and go to [`app1.com:3000`](http://app1.com:3000) to start using the applications :).
+
+## Learning
+
+To learn more about how this 3 apps work with SSO, please read the [SSO article](https://docs.auth0.com/sso/single-sign-on) from our docs.

@@ -1,6 +1,6 @@
 # app1.com
 
-This is the starting point for the SSO example. Remember to start all 3 apps to try everything out and to [configure `/etc/hosts` correctly]()
+This is the starting point for the SSO example. Remember to start all 3 apps to try everything out and to [configure `/etc/hosts` correctly](https://github.com/auth0/auth0-sso-sample#running)
 
 ## Running the example
 
