@@ -1,13 +1,14 @@
 $(document).ready(function () {
 
   // hide the page in case there is an SSO session (to avoid flickering)
-  //document.body.style.display = 'none';
+  document.body.style.display = 'none';
 
   // instantiate Lock
   var lock = new Auth0Lock('KN4SSu8V7p5ss35cy7rygPqDxWtO7sro', 'jerrie.auth0.com');
   var auth0 = new Auth0({
     domain: 'jerrie.auth0.com',
-    clientID: 'KN4SSu8V7p5ss35cy7rygPqDxWtO7sro'
+    clientID: 'KN4SSu8V7p5ss35cy7rygPqDxWtO7sro',
+    callbackOnLocationHash: true
   });
 
   // sso requires redirect mode, hence we need to parse
@@ -25,6 +26,8 @@ $(document).ready(function () {
   //   return;
   // }
   lock.on("authenticated", function (authResult) {
+    isAuthCallback = true;
+
     lock.getProfile(authResult.idToken, function (error, profile) {
       if (error) {
         // Handle error
@@ -38,6 +41,8 @@ $(document).ready(function () {
     });
   });
 
+  var isAuthCallback = false;
+
   // Get the user token if we've saved it in localStorage before
   var idToken = localStorage.getItem('userToken');
   if (idToken) {
@@ -46,22 +51,24 @@ $(document).ready(function () {
     // But in this case, we just hide and show things
     goToHomepage(getQueryParameter('targetUrl'), idToken);
     return;
+  } else {
+    // user is not logged, check whether there is an SSO session or not
+    auth0.getSSOData(function (err, data) {
+      if (!isAuthCallback && !err && data.sso) {
+        // there is! redirect to Auth0 for SSO
+        auth0.signin({
+          connection: data.lastUsedConnection.name,
+          scope: 'openid name picture',
+          params: {
+            state: getQueryParameter('targetUrl')
+          }
+        });
+      } else {
+        // regular login
+        document.body.style.display = 'inline';
+      }
+    });
   }
-
-  // user is not logged, check whether there is an SSO session or not
-  auth0.getSSOData(function (err, data) {
-    if (!err && data.sso) {
-      // there is! redirect to Auth0 for SSO
-      lock.signin({
-        params: {
-          state: getQueryParameter('targetUrl') 
-        }
-      });
-    } else {
-      // regular login
-      document.body.style.display = 'inline';
-    }
-  });
 
   // Showing Login
   $('.btn-login').click(function (e) {
