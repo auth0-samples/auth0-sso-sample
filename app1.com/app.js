@@ -58,6 +58,7 @@ $(document).ready(function () {
         // there is! redirect to Auth0 for SSO
         auth0.signin({
           connection: data.lastUsedConnection.name,
+          scope: 'openid name picture',
           params: {
             state: getQueryParameter('targetUrl')
           }
