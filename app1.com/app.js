@@ -11,20 +11,7 @@ $(document).ready(function () {
     callbackOnLocationHash: true
   });
 
-  // sso requires redirect mode, hence we need to parse
-  // the response from Auth0 that comes on location hash
-  // var hash = lock.parseHash(window.location.hash);
-  // if (hash && hash.id_token) {
-  //   // the user came back from the login (either SSO or regular login),
-  //   // save the token
-  //   localStorage.setItem('userToken', hash.id_token);
-  //   // redirect to "targetUrl" if any
-  //   // This would go to a different route like
-  //   // window.location.href = hash.state || '#home';
-  //   // But in this case, we just hide and show things
-  //   goToHomepage(hash.state, hash.id_token);
-  //   return;
-  // }
+  // Handle authenticated event to store id_token in localStorage
   lock.on("authenticated", function (authResult) {
     isAuthCallback = true;
 
