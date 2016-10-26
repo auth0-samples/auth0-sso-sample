@@ -12,7 +12,7 @@ module.exports = function(app) {
       console.log("Authenticating with Auth0 for SSO");
       passport.authenticate('auth0', {
         state: req.query.targetUrl,
-        // connection: 'Timesheet-Users'
+        connection: 'Username-Password-Authentication'
       })(req, res, next);
     }
   });

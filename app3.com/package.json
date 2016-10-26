@@ -16,8 +16,8 @@
     "express-session": "^1.7.4",
     "morgan": "^1.2.2",
     "node-sync-walker": "^0.1.0",
-    "passport": "^0.2.0",
-    "passport-auth0": "^0.2.0",
+    "passport": "^0.3.2",
+    "passport-auth0": "^0.5.2",
     "swig": "^1.4.2"
   },
   "engines": {

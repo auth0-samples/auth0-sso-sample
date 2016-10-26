@@ -4,10 +4,10 @@ $(document).ready(function () {
   document.body.style.display = 'none';
 
   // instantiate Lock
-  var lock = new Auth0Lock('KN4SSu8V7p5ss35cy7rygPqDxWtO7sro', 'jerrie.auth0.com');
+  var lock = new Auth0Lock('ZjAxVwIFlBawtCS3L1Pm9AOghYeDaIlZ', 'auth0pnp.auth0.com');
   var auth0 = new Auth0({
-    domain: 'jerrie.auth0.com',
-    clientID: 'KN4SSu8V7p5ss35cy7rygPqDxWtO7sro',
+    domain: 'auth0pnp.auth0.com',
+    clientID: 'ZjAxVwIFlBawtCS3L1Pm9AOghYeDaIlZ',
     callbackOnLocationHash: true
   });
 
@@ -74,12 +74,13 @@ $(document).ready(function () {
   $('.btn-login').click(function (e) {
     e.preventDefault();
     lock.show({
-      authParams: {
-        scope: 'openid name picture'
+      auth: {
+        params: {
+          scope: 'openid name picture'
+        }
       }
     });
   });
-
 
   // Sending token in header if available
   // $.ajaxSetup({
