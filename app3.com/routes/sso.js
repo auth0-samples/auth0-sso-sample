@@ -11,7 +11,8 @@ module.exports = function(app) {
     } else {
       console.log("Authenticating with Auth0 for SSO");
       passport.authenticate('auth0', {
-        state: req.query.targetUrl
+        state: req.query.targetUrl,
+        connection: 'Username-Password-Authentication'
       })(req, res, next);
     }
   });
