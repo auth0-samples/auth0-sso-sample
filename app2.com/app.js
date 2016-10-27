@@ -69,20 +69,6 @@ $(document).ready(function () {
     });
   });
 
-  // Sending token in header if available
-  // $.ajaxSetup({
-  //   'beforeSend': function (xhr) {
-  //     if (localStorage.getItem('userToken')) {
-  //       xhr.setRequestHeader('Authorization',
-  //         'Bearer ' + localStorage.getItem('userToken'));
-  //     }
-  //   }
-  // });
-
-  $('.btn-api').click(function (e) {
-    // Just call your API here. The header will be sent
-  });
-
   function goToHomepage(state, token) {
     // Instead of redirect, we just show boxes
     document.body.style.display = 'inline';
