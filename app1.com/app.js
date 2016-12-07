@@ -22,6 +22,7 @@ $(document).ready(function () {
       }
 
       localStorage.setItem('userToken', authResult.idToken);
+      localStorage.setItem('connection-name', getConnectionFromProfile(profile));
 
       goToHomepage(authResult.state, authResult.idToken);
       return;
@@ -80,6 +81,11 @@ $(document).ready(function () {
       $('.url').show();
       $('.url span').text(state);
     }
+
+    var connectionName = localStorage.getItem('connection-name');
+    if (connectionName !== null) {
+      $('#app3-url').attr('href', $('#app3-url').attr('href') + '&connection=' + encodeURIComponent(connectionName));
+    }
   }
 
   function getQueryParameter(name) {
@@ -89,5 +95,18 @@ $(document).ready(function () {
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
   }
 
+  function getConnectionFromProfile(profile) {
+    var userIdSplits = profile.user_id.split('|');
 
+    if (userIdSplits.length === 2) {
+      var identity = profile.identities.find(function(identity) {
+        return identity.provider === userIdSplits[0] && identity.user_id === userIdSplits[1];
+      });
+
+      if (identity !== 'undefined')
+        return identity.connection;
+    }
+
+    return "";
+  }
 });
