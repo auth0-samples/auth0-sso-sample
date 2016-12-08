@@ -4,7 +4,13 @@ $(document).ready(function () {
   document.body.style.display = 'none';
 
   // instantiate Lock
-  var lock = new Auth0Lock('QLxSuRiYf0mkkzYp8qZgNq1tBkesd8Sq', 'auth0pnp.auth0.com');
+  var lock = new Auth0Lock('QLxSuRiYf0mkkzYp8qZgNq1tBkesd8Sq', 'auth0pnp.auth0.com', {
+    auth: {
+      params: {
+        scope: 'openid name picture'
+      }
+    }
+  });
   var auth0 = new Auth0({
     domain: 'auth0pnp.auth0.com',
     clientID: 'QLxSuRiYf0mkkzYp8qZgNq1tBkesd8Sq',
@@ -61,13 +67,7 @@ $(document).ready(function () {
   // Showing Login
   $('.btn-login').click(function (e) {
     e.preventDefault();
-    lock.show({
-      auth: {
-        params: {
-          scope: 'openid name picture'
-        }
-      }
-    });
+    lock.show();
   });
 
   function goToHomepage(state, token) {
@@ -99,7 +99,7 @@ $(document).ready(function () {
     var userIdSplits = profile.user_id.split('|');
 
     if (userIdSplits.length === 2) {
-      var identity = profile.identities.find(function(identity) {
+      var identity = profile.identities.find(function (identity) {
         return identity.provider === userIdSplits[0] && identity.user_id === userIdSplits[1];
       });
 
