@@ -53,9 +53,7 @@ $(document).ready(function () {
         auth0.signin({
           connection: data.lastUsedConnection.name,
           scope: 'openid name picture',
-          params: {
-            state: getQueryParameter('targetUrl')
-          }
+          state: getQueryParameter('targetUrl')
         });
       } else {
         // regular login
