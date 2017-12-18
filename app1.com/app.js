@@ -1,19 +1,20 @@
 $(document).ready(function () {
 
   // hide the page in case there is an SSO session (to avoid flickering)
-  document.body.style.display = 'none';
+  document.body.style.display = 'inline';
 
   // instantiate Lock
   var lock = new Auth0Lock('QLxSuRiYf0mkkzYp8qZgNq1tBkesd8Sq', 'auth0pnp.auth0.com', {
     auth: {
       params: {
-        scope: 'openid name picture'
+        scope: 'openid name email'
       }
     }
   });
-  var auth0 = new Auth0({
+  var webAuth = new auth0.WebAuth({
     domain: 'auth0pnp.auth0.com',
     clientID: 'QLxSuRiYf0mkkzYp8qZgNq1tBkesd8Sq',
+    redirectURI: 'https://localhost:3000',
     callbackOnLocationHash: true
   });
 
@@ -21,7 +22,7 @@ $(document).ready(function () {
   lock.on("authenticated", function (authResult) {
     isAuthCallback = true;
 
-    lock.getProfile(authResult.idToken, function (error, profile) {
+    lock.getProfile(authResult.accessToken, function (error, profile) {
       if (error) {
         // Handle error
         return;
@@ -47,12 +48,12 @@ $(document).ready(function () {
     return;
   } else {
     // user is not logged, check whether there is an SSO session or not
-    auth0.getSSOData(function (err, data) {
+    webAuth.client.getSSOData(function (err, data) {
       if (!isAuthCallback && !err && data.sso) {
         // there is! redirect to Auth0 for SSO
-        auth0.signin({
+        webAuth.authorize({
           connection: data.lastUsedConnection.name,
-          scope: 'openid name picture',
+          scope: 'openid name email',
           state: getQueryParameter('targetUrl')
         });
       } else {
