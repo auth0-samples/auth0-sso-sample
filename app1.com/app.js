@@ -1,44 +1,24 @@
 $(document).ready(function () {
 
+  const AUTH0_CLIENT_ID = 'QLxSuRiYf0mkkzYp8qZgNq1tBkesd8Sq';
+  const AUTH0_DOMAIN = 'auth0pnp.auth0.com';
+
   // hide the page in case there is an SSO session (to avoid flickering)
   document.body.style.display = 'none';
 
-  // instantiate Lock
-  var lock = new Auth0Lock('QLxSuRiYf0mkkzYp8qZgNq1tBkesd8Sq', 'auth0pnp.auth0.com', {
-    auth: {
-      params: {
-        scope: 'openid name picture'
-      }
-    }
-  });
-  var auth0 = new Auth0({
-    domain: 'auth0pnp.auth0.com',
-    clientID: 'QLxSuRiYf0mkkzYp8qZgNq1tBkesd8Sq',
-    callbackOnLocationHash: true
-  });
-
-  // Handle authenticated event to store id_token in localStorage
-  lock.on("authenticated", function (authResult) {
-    isAuthCallback = true;
-
-    lock.getProfile(authResult.idToken, function (error, profile) {
-      if (error) {
-        // Handle error
-        return;
-      }
-
-      localStorage.setItem('userToken', authResult.idToken);
-      localStorage.setItem('connection-name', getConnectionFromProfile(profile));
-
-      goToHomepage(authResult.state, authResult.idToken);
-      return;
-    });
+  const webAuth = new auth0.WebAuth({
+      domain: AUTH0_DOMAIN,
+      clientID: AUTH0_CLIENT_ID,
+      audience: 'https://' + AUTH0_DOMAIN + '/userinfo',
+      scope: 'openid profile',
+      responseType: 'token id_token',
+      redirectUri: 'http://app1.com:3000'
   });
 
   var isAuthCallback = false;
 
   // Get the user token if we've saved it in localStorage before
-  var idToken = localStorage.getItem('userToken');
+  var idToken = localStorage.getItem('idToken');
   if (idToken) {
     // This would go to a different route like
     // window.location.href = '#home';
@@ -46,26 +26,25 @@ $(document).ready(function () {
     goToHomepage(getQueryParameter('targetUrl'), idToken);
     return;
   } else {
-    // user is not logged, check whether there is an SSO session or not
-    auth0.getSSOData(function (err, data) {
-      if (!isAuthCallback && !err && data.sso) {
-        // there is! redirect to Auth0 for SSO
-        auth0.signin({
-          connection: data.lastUsedConnection.name,
-          scope: 'openid name picture',
-          state: getQueryParameter('targetUrl')
-        });
-      } else {
-        // regular login
+    // If user is not signed in, check if we have an SSO session
+    webAuth.checkSession({
+      state: getQueryParameter('targetUrl')
+    }, function(err, result) {
+      if (err) {
+        // If no SSO session was found, display the normal login
         document.body.style.display = 'inline';
+      } else {
+        // If authentication via SSO was successful, then display the home page
+        saveAuthResult(result);
+        goToHomepage(result.state, result.idToken);
       }
-    });
+    })
   }
 
   // Showing Login
   $('.btn-login').click(function (e) {
     e.preventDefault();
-    lock.show();
+    webAuth.authorize();
   });
 
   function goToHomepage(state, token) {
@@ -79,11 +58,6 @@ $(document).ready(function () {
       $('.url').show();
       $('.url span').text(state);
     }
-
-    var connectionName = localStorage.getItem('connection-name');
-    if (connectionName !== null) {
-      $('#app3-url').attr('href', $('#app3-url').attr('href') + '&connection=' + encodeURIComponent(connectionName));
-    }
   }
 
   function getQueryParameter(name) {
@@ -93,18 +67,17 @@ $(document).ready(function () {
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
   }
 
-  function getConnectionFromProfile(profile) {
-    var userIdSplits = profile.user_id.split('|');
-
-    if (userIdSplits.length === 2) {
-      var identity = profile.identities.find(function (identity) {
-        return identity.provider === userIdSplits[0] && identity.user_id === userIdSplits[1];
-      });
-
-      if (identity !== 'undefined')
-        return identity.connection;
-    }
-
-    return "";
+  function saveAuthResult (result) {
+    localStorage.setItem('idToken', result.idToken);
+    localStorage.setItem('accessToken', result.accessToken);
+    localStorage.setItem('expirationDate', Date.now() + Number.parseInt(result.expiresIn) * 1000);
   }
+
+  webAuth.parseHash(window.location.hash, function (err, result) {
+    if (err) {
+        console.error(err);
+    } else if (result) {
+        saveAuthResult(result);
+    }
+  });
 });
