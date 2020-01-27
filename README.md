@@ -39,3 +39,15 @@ Once that's done, just run all 3 applications (See specific instructions on each
 ## Learning
 
 To learn more about how this 3 apps work with SSO, please read the [SSO article](https://docs.auth0.com/sso/single-sign-on) from our docs.
+
+## Issue Reporting
+
+If you have found a bug or if you have a feature request, please report them at this repository issues section. Please do not report security vulnerabilities on the public GitHub issue tracker. The [Responsible Disclosure Program](https://auth0.com/whitehat) details the procedure for disclosing security issues.
+
+## Author
+
+[Auth0](auth0.com)
+
+## License
+
+This project is licensed under the MIT license. See the [LICENSE](LICENSE) file for more info.
